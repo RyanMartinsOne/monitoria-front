@@ -9,7 +9,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 import { EyeIcon } from "lucide-react";
-
+ 
 export default function Home() {
   return (
     <div className="w-full p-6 flex flex-col items-center space-y-7">

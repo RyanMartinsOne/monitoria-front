@@ -8,7 +8,7 @@ import {
 
 export default function App() {
   return (
-    <div className="w-full flex flex-col">
+    <div className="flex min-h-screen flex-col">
       <header className="p-4 flex justify-between items-center bg-header">
         <NavigationMenu className="text-white">
           <NavigationMenuList className="gap-2">
@@ -20,13 +20,13 @@ export default function App() {
                 Início
               </Link>
             </NavigationMenuItem>
-
+            
             <NavigationMenuItem>
               <Link
-                to="/login"
+                to="/dashboard"
                 className={`${navigationMenuTriggerStyle()} text-white bg-transparent hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white`}
               >
-                Login
+                Dashboard
               </Link>
             </NavigationMenuItem>
 
@@ -39,19 +39,11 @@ export default function App() {
               </Link>
             </NavigationMenuItem>
 
-            <NavigationMenuItem>
-              <Link
-                to="/dashboard"
-                className={`${navigationMenuTriggerStyle()} text-white bg-transparent hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white`}
-              >
-                Dashboard
-              </Link>
-            </NavigationMenuItem>
           </NavigationMenuList>
         </NavigationMenu>
       </header>
 
-      <main className="flex-1 bg-main">
+      <main className="flex flex-1 bg-main">
         <Outlet />
       </main>
     </div>

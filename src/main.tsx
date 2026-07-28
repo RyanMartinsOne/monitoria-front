@@ -3,38 +3,43 @@ import ReactDOM from "react-dom/client";
 import { createBrowserRouter, RouterProvider } from "react-router";
 import "./index.css";
 
-import App from "./pages/App";
+import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
-import Home from "./pages/Home";
 import Dashboard from "./pages/dashboard/Dashboard";
 import Meeting from "./pages/meetings/Metting";
+import MainLayout from "./pages/layouts/MainLayout";
+import AuthLayout from "./pages/layouts/AuthLayout";
 
 const router = createBrowserRouter([
   {
-    path: "/",
-    element: <App />,
+    element: <MainLayout />,
     children: [
       {
-        index: true, 
+        path: "/",
         element: <Home />,
       },
       {
-        path: "login",
-        element: <Login />,
-      },
-      {
-        path: "register",
-        element: <Register />,
-      },
-      {
-        path: "dashboard",
+        path: "/dashboard",
         element: <Dashboard />,
       },
       {
-        path: "meetings",
+        path: "/meetings",
         element: <Meeting />,
-      }
+      },
+    ],
+  },
+  {
+    element: <AuthLayout />,
+    children: [
+      {
+        path: "/login",
+        element: <Login />,
+      },
+      {
+        path: "/register",
+        element: <Register />,
+      },
     ],
   },
 ]);
