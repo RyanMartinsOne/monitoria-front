@@ -1,16 +1,46 @@
-export const MATERIAS = [
-  { value: "MATEMATICA", label: "Matemática" },
-  { value: "PORTUGUES", label: "Português" },
-  { value: "INGLES", label: "Inglês" },
-  { value: "ESPANHOL", label: "Espanhol" },
-  { value: "FISICA", label: "Física" },
-  { value: "QUIMICA", label: "Química" },
-  { value: "BIOLOGIA", label: "Biologia" },
-  { value: "HISTORIA", label: "História" },
-  { value: "GEOGRAFIA", label: "Geografia" },
-  { value: "FILOSOFIA", label: "Filosofia" },
-  { value: "SOCIOLOGIA", label: "Sociologia" },
-  { value: "ARTES", label: "Artes" },
+import { z } from "zod";
+
+// Valores válidos de matéria
+const MATERIA_VALUES = [
+  "MATEMATICA",
+  "PORTUGUES",
+  "INGLES",
+  "ESPANHOL",
+  "FISICA",
+  "QUIMICA",
+  "BIOLOGIA",
+  "HISTORIA",
+  "GEOGRAFIA",
+  "FILOSOFIA",
+  "SOCIOLOGIA",
+  "ARTES",
 ] as const;
 
-export type Materia = (typeof MATERIAS)[number]["value"];
+// Dicionário para ligar o value a label
+const MATERIA_LABELS = {
+  MATEMATICA: "Matemática",
+  PORTUGUES: "Português",
+  INGLES: "Inglês",
+  ESPANHOL: "Espanhol",
+  FISICA: "Física",
+  QUIMICA: "Química",
+  BIOLOGIA: "Biologia",
+  HISTORIA: "História",
+  GEOGRAFIA: "Geografia",
+  FILOSOFIA: "Filosofia",
+  SOCIOLOGIA: "Sociologia",
+  ARTES: "Artes",
+};
+
+// Para o Select
+export const MATERIAS = MATERIA_VALUES.map((value) => ({
+  value,
+  label: MATERIA_LABELS[value],
+}));
+
+// Para o zod, passando o values
+export const MateriaEnum = z.enum(MATERIA_VALUES, {
+  error: "A matéria é obrigatória.",
+});
+
+export type Materia = z.infer<typeof MateriaEnum>;
