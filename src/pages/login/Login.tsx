@@ -14,11 +14,7 @@ import { useForm } from "react-hook-form";
 import { Link } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-
-interface LoginRequest {
-  name: string;
-  password: string;
-}
+import type { LoginRequest } from "@/types/auth";
 
 const loginSchema = z.object({
   name: z
@@ -81,7 +77,12 @@ export default function Login() {
             <div className="grid gap-2">
               <Label htmlFor="name">Nome</Label>
 
-              <Input className="text-sm" id="name" placeholder="Seu nome" {...register("name")} />
+              <Input
+                className="text-sm"
+                id="name"
+                placeholder="Seu nome"
+                {...register("name")}
+              />
 
               {errors.name && (
                 <p className="text-sm text-destructive">
