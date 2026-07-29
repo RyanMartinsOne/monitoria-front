@@ -40,30 +40,69 @@ interface MeetingRequest {
   beneficiado: string;
   materia: string;
   assunto?: string;
+  telefone?: string;
   meetingDate: string;
   observations?: string;
 }
 
-const today = new Date();
-today.setHours(0, 0, 0, 0);
-
 const meetingDataSchema = z.object({
-  beneficiado: z.string().min(1, "O aluno é obrigatório.")
-  .regex(/^[A-Za-zÀ-ÿ\s]+$/, "O nome do aluno deve conter apenas letras e espaços."),
-  materia: z.string().min(1, "A matéria é obrigatória."),
-  assunto: z.string().optional(),
+  beneficiado: z
+    .string()
+    .min(1, "O aluno é obrigatório.")
+    .regex(
+      /^[A-Za-zÀ-ÿ\s']+$/, // Só aceita letras (maiúsculas e minúsculas), espaços e apóstrofos
+      "O nome do aluno deve conter apenas letras e espaços.",
+    )
+    .transform((val) => {
+      const excecoes = ["de", "da", "do", "dos", "das", "e"];
+      
+      return val
+        .trim()
+        .toLowerCase()
+        .split(/\s+/)
+        .map((palavra, index) => {
+          // A primeira letra fica maiúscula, mesmo se for exceção
+          if (index !== 0 && excecoes.includes(palavra)) {
+            return palavra;
+          }
+          return palavra.charAt(0).toUpperCase() + palavra.slice(1);
+        })
+        .join(" ");
+    }),
+  materia: z.string().trim().min(1, "A matéria é obrigatória."),
+  assunto: z
+    .string()
+    .trim()
+    .transform((val) => (val === "" ? undefined : val))
+    .optional(),
+telefone: z
+  .string()
+  .transform((val) => val.replace(/\D/g, ""))
+  .transform((val) => (val === "" ? undefined : val))
+  .optional(),
 
   date: z
     .date({
       error: "Selecione uma data.",
     })
-    .refine((date) => date >= today, {
-      message: "A data não pode ser anterior a hoje.",
-    }),
+    .refine(
+      (date) => {
+        const today = new Date();
+        today.setHours(0, 0, 0, 0);
+        return date >= today;
+      },
+      {
+        message: "A data não pode ser anterior a hoje.",
+      }
+    ),
 
   time: z.string().min(1, "Selecione um horário."),
 
-  observations: z.string().optional(),
+observations: z
+    .string()
+    .trim()
+    .transform((val) => (val === "" ? undefined : val))
+    .optional(),
 });
 
 type MeetingData = z.infer<typeof meetingDataSchema>;
@@ -88,6 +127,7 @@ export function DialogMeeting({ children }: DialogMeetingProps) {
       beneficiado: data.beneficiado,
       materia: data.materia,
       assunto: data.assunto,
+      telefone: data.telefone,
       meetingDate: toLocalDateTime(data.date, data.time),
       observations: data.observations,
     };
@@ -112,7 +152,9 @@ export function DialogMeeting({ children }: DialogMeetingProps) {
 
           <FieldGroup className="py-4 -mx-4 no-scrollbar max-h-[70vh] overflow-y-auto px-4">
             <Field>
-              <FieldLabel>Aluno <span className="text-destructive">*</span></FieldLabel>
+              <FieldLabel>
+                Aluno <span className="text-destructive">*</span>
+              </FieldLabel>
 
               <Input {...register("beneficiado")} />
 
@@ -124,7 +166,9 @@ export function DialogMeeting({ children }: DialogMeetingProps) {
             </Field>
 
             <Field>
-              <FieldLabel>Matéria <span className="text-destructive">*</span></FieldLabel>
+              <FieldLabel>
+                Matéria <span className="text-destructive">*</span>
+              </FieldLabel>
 
               <Input {...register("materia")} />
 
@@ -147,13 +191,27 @@ export function DialogMeeting({ children }: DialogMeetingProps) {
               )}
             </Field>
 
+            <Field>
+              <FieldLabel>Telefone</FieldLabel>
+
+              <Input {...register("telefone")} />
+
+              {errors.telefone && (
+                <p className="text-sm text-destructive">
+                  {errors.telefone.message}
+                </p>
+              )}
+            </Field>
+
             <FieldGroup className="flex gap-4 flex-row justify-end-safe">
               <Controller
                 control={control}
                 name="date"
                 render={({ field }) => (
                   <Field className="flex-1">
-                    <FieldLabel>Data <span className="text-destructive">*</span></FieldLabel>
+                    <FieldLabel>
+                      Data <span className="text-destructive">*</span>
+                    </FieldLabel>
 
                     <Popover open={openCalendar} onOpenChange={setOpenCalendar}>
                       <PopoverTrigger
@@ -196,7 +254,9 @@ export function DialogMeeting({ children }: DialogMeetingProps) {
               />
 
               <Field className="w-36">
-                <FieldLabel>Horário <span className="text-destructive">*</span></FieldLabel>
+                <FieldLabel>
+                  Horário <span className="text-destructive">*</span>
+                </FieldLabel>
 
                 <Input type="time" {...register("time")} />
 
