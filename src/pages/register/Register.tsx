@@ -23,29 +23,8 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-
-const Materia = [
-  { value: "MATEMATICA", label: "Matemática" },
-  { value: "PORTUGUES", label: "Português" },
-  { value: "INGLES", label: "Inglês" },
-  { value: "ESPANHOL", label: "Espanhol" },
-  { value: "FISICA", label: "Física" },
-  { value: "QUIMICA", label: "Química" },
-  { value: "BIOLOGIA", label: "Biologia" },
-  { value: "HISTORIA", label: "História" },
-  { value: "GEOGRAFIA", label: "Geografia" },
-  { value: "FILOSOFIA", label: "Filosofia" },
-  { value: "SOCIOLOGIA", label: "Sociologia" },
-  { value: "ARTES", label: "Artes" },
-] as const;
-
-const MateriaEnum = z.enum(Materia.map((item) => item.value));
-
-interface RegisterRequest {
-  name: string;
-  materia: (typeof Materia)[number]["value"];
-  password: string;
-}
+import { MateriaEnum, MATERIAS } from "@/types/materia";
+import type { RegisterRequest } from "@/types/auth";
 
 const RegisterSchema = z
   .object({
@@ -54,9 +33,7 @@ const RegisterSchema = z
       .min(2, "O nome deve ter pelo menos 2 caracteres.")
       .max(100, "O nome não pode ter mais de 100 caracteres."),
 
-    materia: MateriaEnum.optional().refine((value) => value !== undefined, {
-      message: "A matéria é obrigatória.",
-    }),
+    materia: MateriaEnum,
 
     password: z
       .string()
@@ -89,7 +66,7 @@ export default function Register() {
     try {
       const payload: RegisterRequest = {
         name: data.name,
-        materia: data.materia as (typeof Materia)[number]["value"],
+        materia: data.materia,
         password: data.password,
       };
       reset();
@@ -150,7 +127,7 @@ export default function Register() {
                   >
                     <SelectTrigger className="w-full">
                       <SelectValue>
-                        {Materia.find((item) => item.value === field.value)
+                        {MATERIAS.find((item) => item.value === field.value)
                           ?.label ?? "Selecione uma matéria"}
                       </SelectValue>
                     </SelectTrigger>
@@ -159,7 +136,7 @@ export default function Register() {
                       <SelectGroup>
                         <SelectLabel>Matérias</SelectLabel>
 
-                        {Materia.map((item) => (
+                        {MATERIAS.map((item) => (
                           <SelectItem key={item.value} value={item.value}>
                             {item.label}
                           </SelectItem>
