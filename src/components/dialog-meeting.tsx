@@ -31,18 +31,20 @@ import {
 } from "@/components/ui/popover";
 
 import { toLocalDateTime } from "@/utils/local-date-time";
+import type { EncontroRequest } from "@/types/encontro";
+import { MateriaEnum, MATERIAS } from "@/types/materia";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "./ui/select";
 
 interface DialogMeetingProps {
   children: React.ReactNode;
-}
-
-interface MeetingRequest {
-  beneficiado: string;
-  materia: string;
-  assunto?: string;
-  telefone?: string;
-  meetingDate: string;
-  observations?: string;
 }
 
 const meetingDataSchema = z.object({
@@ -55,7 +57,7 @@ const meetingDataSchema = z.object({
     )
     .transform((val) => {
       const excecoes = ["de", "da", "do", "dos", "das", "e"];
-      
+
       return val
         .trim()
         .toLowerCase()
@@ -69,17 +71,17 @@ const meetingDataSchema = z.object({
         })
         .join(" ");
     }),
-  materia: z.string().trim().min(1, "A matéria é obrigatória."),
+  materia: MateriaEnum,
   assunto: z
     .string()
     .trim()
     .transform((val) => (val === "" ? undefined : val))
     .optional(),
-telefone: z
-  .string()
-  .transform((val) => val.replace(/\D/g, ""))
-  .transform((val) => (val === "" ? undefined : val))
-  .optional(),
+  telefone: z
+    .string()
+    .transform((val) => val.replace(/\D/g, ""))
+    .transform((val) => (val === "" ? undefined : val))
+    .optional(),
 
   date: z
     .date({
@@ -93,12 +95,12 @@ telefone: z
       },
       {
         message: "A data não pode ser anterior a hoje.",
-      }
+      },
     ),
 
   time: z.string().min(1, "Selecione um horário."),
 
-observations: z
+  observations: z
     .string()
     .trim()
     .transform((val) => (val === "" ? undefined : val))
@@ -119,16 +121,17 @@ export function DialogMeeting({ children }: DialogMeetingProps) {
     resolver: zodResolver(meetingDataSchema),
     defaultValues: {
       time: "12:00",
+      // materia: user?.perfil === "MONITOR" ? user.materia : undefined,
     },
   });
 
   function onSubmit(data: MeetingData) {
-    const payload: MeetingRequest = {
+    const payload: EncontroRequest = {
       beneficiado: data.beneficiado,
       materia: data.materia,
       assunto: data.assunto,
       telefone: data.telefone,
-      meetingDate: toLocalDateTime(data.date, data.time),
+      dataHora: toLocalDateTime(data.date, data.time),
       observations: data.observations,
     };
 
@@ -167,10 +170,37 @@ export function DialogMeeting({ children }: DialogMeetingProps) {
 
             <Field>
               <FieldLabel>
-                Matéria <span className="text-destructive">*</span>
+                Matéria<span className="text-destructive">*</span>
               </FieldLabel>
+              <Controller
+                name="materia"
+                control={control}
+                render={({ field }) => (
+                  <Select
+                    value={field.value || ""}
+                    onValueChange={field.onChange}
+                  >
+                    <SelectTrigger className="w-full">
+                      <SelectValue>
+                        {MATERIAS.find((item) => item.value === field.value)
+                          ?.label ?? "Selecione uma matéria"}
+                      </SelectValue>
+                    </SelectTrigger>
 
-              <Input {...register("materia")} />
+                    <SelectContent>
+                      <SelectGroup>
+                        <SelectLabel>Matérias</SelectLabel>
+
+                        {MATERIAS.map((item) => (
+                          <SelectItem key={item.value} value={item.value}>
+                            {item.label}
+                          </SelectItem>
+                        ))}
+                      </SelectGroup>
+                    </SelectContent>
+                  </Select>
+                )}
+              />
 
               {errors.materia && (
                 <p className="text-sm text-destructive">
