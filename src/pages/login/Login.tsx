@@ -11,10 +11,11 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import type { LoginRequest } from "@/types/auth";
+import { useLogin } from "@/hooks/useAuth";
 
 const loginSchema = z.object({
   name: z
@@ -31,6 +32,10 @@ const loginSchema = z.object({
 type LoginData = z.infer<typeof loginSchema>;
 
 export default function Login() {
+
+  const loginMutation = useLogin();
+  const navigate = useNavigate();
+
   const {
     register,
     reset,
@@ -40,14 +45,15 @@ export default function Login() {
     resolver: zodResolver(loginSchema),
   });
 
-  function onSubmit(data: LoginData) {
-    try {
-      const payload: LoginRequest = {
-        name: data.name,
-        password: data.password,
+  async function onSubmit(data: LoginData) {
+    const payload: LoginRequest = {
+        nome: data.name,
+        senha: data.password,
       };
+        try {
+      await loginMutation.mutateAsync(payload);
       reset();
-      console.log(payload);
+      navigate("/");
     } catch (error) {
       console.error("Erro ao enviar os dados de login: ", error);
     }

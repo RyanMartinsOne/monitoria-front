@@ -11,7 +11,7 @@ import {
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Controller, useForm } from "react-hook-form";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import {
@@ -25,6 +25,7 @@ import {
 } from "@/components/ui/select";
 import { MateriaEnum, MATERIAS } from "@/types/materia";
 import type { RegisterRequest } from "@/types/auth";
+import { useRegister } from "@/hooks/useAuth";
 
 const RegisterSchema = z
   .object({
@@ -52,6 +53,10 @@ const RegisterSchema = z
 type RegisterData = z.infer<typeof RegisterSchema>;
 
 export default function Register() {
+
+  const registerMutation = useRegister();
+  const navigate = useNavigate();
+
   const {
     register,
     control,
@@ -62,15 +67,16 @@ export default function Register() {
     resolver: zodResolver(RegisterSchema),
   });
 
-  function onSubmit(data: RegisterData) {
+  async function onSubmit(data: RegisterData) {
+    const payload: RegisterRequest = {
+      nome: data.name,
+      materia: data.materia,
+      senha: data.password,
+    };
     try {
-      const payload: RegisterRequest = {
-        name: data.name,
-        materia: data.materia,
-        password: data.password,
-      };
+      await registerMutation.mutateAsync(payload);
       reset();
-      console.log(payload);
+      navigate("/login");
     } catch (error) {
       console.error("Erro ao enviar os dados de registro: ", error);
     }
@@ -193,9 +199,18 @@ export default function Register() {
         </CardContent>
 
         <CardFooter className="mt-4">
-          <Button type="submit" className="w-full">
-            Registre-se
+          <Button
+            type="submit"
+            className="w-full"
+            disabled={registerMutation.isPending}
+          >
+            {registerMutation.isPending ? "Registrando..." : "Registrar"}
           </Button>
+          {registerMutation.isError && (
+            <p className="text-sm text-destructive">
+              Erro ao cadastrar usuário.
+            </p>
+          )}
         </CardFooter>
       </form>
     </Card>
