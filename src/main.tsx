@@ -12,25 +12,32 @@ import Dashboard from "./pages/dashboard/Dashboard";
 import Meeting from "./pages/meetings/Metting";
 import MainLayout from "./pages/layouts/MainLayout";
 import AuthLayout from "./pages/layouts/AuthLayout";
+import ProtectedRoute from "./components/protectedRoute";
 
 const router = createBrowserRouter([
   {
     element: <MainLayout />,
     children: [
       {
-        path: "/",
-        element: <Home />,
-      },
-      {
-        path: "/dashboard",
-        element: <Dashboard />,
-      },
-      {
-        path: "/meetings",
-        element: <Meeting />,
+        element: <ProtectedRoute />,
+        children: [
+          {
+            path: "/",
+            element: <Home />,
+          },
+          {
+            path: "/dashboard",
+            element: <Dashboard />,
+          },
+          {
+            path: "/meetings",
+            element: <Meeting />,
+          },
+        ],
       },
     ],
   },
+
   {
     element: <AuthLayout />,
     children: [
@@ -52,7 +59,7 @@ ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <RouterProvider router={router} />
-       <ReactQueryDevtools initialIsOpen={false} />
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </React.StrictMode>,
 );
