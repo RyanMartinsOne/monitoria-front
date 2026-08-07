@@ -5,10 +5,12 @@ import {
   NavigationMenuList,
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
+import { Toaster } from "@/components/ui/toast";
 
 export default function App() {
   return (
     <div className="flex min-h-screen flex-col">
+      <Toaster />
       <header className="p-4 flex justify-between items-center bg-header">
         <NavigationMenu className="text-white">
           <NavigationMenuList className="gap-2">
