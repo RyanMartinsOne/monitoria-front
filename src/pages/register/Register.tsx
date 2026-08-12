@@ -25,7 +25,9 @@ import {
 } from "@/components/ui/select";
 import { MateriaEnum, MATERIAS } from "@/types/materia";
 import type { RegisterRequest } from "@/types/auth";
+import type { ErrorResponse } from "@/types/error";
 import { useRegister } from "@/hooks/useAuth";
+import { AxiosError } from "axios";
 
 const RegisterSchema = z
   .object({
@@ -53,8 +55,8 @@ const RegisterSchema = z
 type RegisterData = z.infer<typeof RegisterSchema>;
 
 export default function Register() {
-
   const registerMutation = useRegister();
+  const error = registerMutation.error as AxiosError<ErrorResponse>;
   const navigate = useNavigate();
 
   const {
@@ -195,6 +197,11 @@ export default function Register() {
                 </p>
               )}
             </div>
+            {registerMutation.isError && (
+              <p className="text-sm text-destructive">
+                {error.response?.data.message ?? "Erro ao cadastrar usuário."}
+              </p>
+            )}
           </div>
         </CardContent>
 
@@ -206,11 +213,6 @@ export default function Register() {
           >
             {registerMutation.isPending ? "Registrando..." : "Registrar"}
           </Button>
-          {registerMutation.isError && (
-            <p className="text-sm text-destructive">
-              Erro ao cadastrar usuário.
-            </p>
-          )}
         </CardFooter>
       </form>
     </Card>

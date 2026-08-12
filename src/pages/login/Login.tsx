@@ -15,7 +15,9 @@ import { Link, useNavigate } from "react-router";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
 import type { LoginRequest } from "@/types/auth";
+import type { ErrorResponse } from "@/types/error";
 import { useLogin } from "@/hooks/useAuth";
+import type { AxiosError } from "axios";
 
 const loginSchema = z.object({
   name: z
@@ -32,8 +34,8 @@ const loginSchema = z.object({
 type LoginData = z.infer<typeof loginSchema>;
 
 export default function Login() {
-
   const loginMutation = useLogin();
+  const error = loginMutation.error as AxiosError<ErrorResponse>;
   const navigate = useNavigate();
 
   const {
@@ -47,10 +49,10 @@ export default function Login() {
 
   async function onSubmit(data: LoginData) {
     const payload: LoginRequest = {
-        nome: data.name,
-        senha: data.password,
-      };
-        try {
+      nome: data.name,
+      senha: data.password,
+    };
+    try {
       await loginMutation.mutateAsync(payload);
       reset();
       navigate("/");
@@ -114,6 +116,11 @@ export default function Login() {
                 </p>
               )}
             </div>
+            {loginMutation.isError && (
+              <p className="text-sm text-destructive">
+                {error.response?.data.message ?? "Erro ao fazer login."}
+              </p>
+            )}
           </div>
         </CardContent>
 
