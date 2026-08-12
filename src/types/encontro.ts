@@ -1,4 +1,5 @@
 import type { Materia } from "./materia";
+import type { UsuarioResponse } from "./usuarios";
 
 export type StatusEncontro = "AGENDADO" | "CANCELADO" | "CONCLUIDO";
 
@@ -8,15 +9,17 @@ export type EncontroRequest = {
   assunto?: string;
   telefone?: string;
   dataHora: string;
-  observations?: string;
+  observacoes?: string;
 };
 
 export type EncontroResponse = {
-  id: number;
-  monitor: string;
+  id: string;
+  monitor: UsuarioResponse;
   beneficiado: string;
   materia: Materia;
+  assunto?: string;
+  telefone?: string;
   status: StatusEncontro;
   dataHora: string;
-  observations?: string;
+  observacoes?: string;
 };
