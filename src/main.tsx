@@ -5,6 +5,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import "./index.css";
 
+import NotFound from "./pages/notFound/NotFound";
 import Home from "./pages/home/Home";
 import Login from "./pages/login/Login";
 import Register from "./pages/register/Register";
@@ -32,6 +33,10 @@ const router = createBrowserRouter([
           {
             path: "/meetings",
             element: <Meeting />,
+          },
+          {
+            path: "*",
+            element: <NotFound />,
           },
         ],
       },
