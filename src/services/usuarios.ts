@@ -6,11 +6,6 @@ export async function createUsuario(data: UsuarioRequest) {
   return response.data;
 }
 
-export async function getUsuarios(): Promise<UsuarioResponse[]> {
-  const response = await api.get("/usuarios");
-  return response.data;
-}
-
 export async function getMe(): Promise<UsuarioResponse> {
   const response = await api.get("/usuario/eu");
   return response.data;
