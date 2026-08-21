@@ -9,4 +9,5 @@ export type UsuarioResponse = {
   id: string;
   nome: string;
   materia: Materia;
+  tipo: "COORDENADOR" | "MONITOR";
 };
