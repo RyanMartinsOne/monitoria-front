@@ -15,19 +15,19 @@ export default function NotFound() {
   }, [secondsLeft, navigate]);
 
   return (
-    <div className="relative flex w-full items-center justify-center overflow-hidden bg-[#424242] px-6">
+    <div className="relative flex w-full items-center justify-center overflow-hidden bg-white px-6">
       <div className="flex w-full flex-col justify-center text-center">
-        <h1 className="font-serif text-9xl font-medium tracking-tight text-white">
+        <h1 className="font-serif text-9xl font-medium tracking-tight text-gray-900">
           404
         </h1>
-        <p className="mt-4 text-xl text-gray-300">
+        <p className="mt-4 text-xl text-gray-600">
           A página que você está procurando não existe.
         </p>
 
         <div className="flex-row items-center justify-center gap-4 sm:flex">
           <button
-            onClick={() => navigate("/")}
-            className="mt-8 rounded-full border border-white px-6 py-2.5 text-sm text-white transition-colors hover:border-[#e0dfdb] hover:bg-[#C9A24B]/10"
+            onClick={() => navigate("/", {replace: true})}
+            className="mt-8 rounded-full border border-gray-500 px-6 py-2.5 text-sm text-gray-700 transition-colors hover:border-gray-900 hover:bg-gray-800/10 hover:text-gray-900"
           >
             Voltar agora
           </button>
