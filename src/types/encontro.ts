@@ -1,7 +1,7 @@
 import type { Materia } from "./materia";
 import type { UsuarioResponse } from "./usuarios";
 
-export type StatusEncontro = "AGENDADO" | "CANCELADO" | "CONCLUIDO";
+export type StatusEncontro = "TODAS" | "AGENDADO" | "CANCELADO" | "CONCLUIDO";
 
 export type EncontroRequest = {
   beneficiado: string;
