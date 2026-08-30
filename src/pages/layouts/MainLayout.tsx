@@ -6,8 +6,11 @@ import {
   navigationMenuTriggerStyle,
 } from "@/components/ui/navigation-menu";
 import { Toaster } from "@/components/ui/toast";
+import { useCurrentUser } from "@/hooks/useUsuarios";
 
 export default function App() {
+  const { data: usuario } = useCurrentUser();
+  
   return (
     <div className="flex min-h-screen flex-col">
       <Toaster />
@@ -23,6 +26,7 @@ export default function App() {
               </Link>
             </NavigationMenuItem>
             
+            {usuario?.tipo === "COORDENADOR" && (
             <NavigationMenuItem>
               <Link
                 to="/dashboard"
@@ -31,6 +35,7 @@ export default function App() {
                 Dashboard
               </Link>
             </NavigationMenuItem>
+            )}
 
             <NavigationMenuItem>
               <Link
