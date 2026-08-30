@@ -88,6 +88,7 @@ export default function Login() {
               <Input
                 className="text-sm"
                 id="name"
+                autoComplete="username"
                 placeholder="Seu nome"
                 {...register("name")}
               />
@@ -106,6 +107,7 @@ export default function Login() {
                 className="text-sm"
                 id="password"
                 type="password"
+                autoComplete="current-password"
                 placeholder="Sua senha"
                 {...register("password")}
               />
