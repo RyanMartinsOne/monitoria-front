@@ -23,3 +23,8 @@ export type EncontroResponse = {
   dataHora: string;
   observacoes?: string;
 };
+
+export type EncontroFilter = {
+  status?: StatusEncontro;
+  materia?: Materia;
+}
