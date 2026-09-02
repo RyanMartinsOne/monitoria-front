@@ -17,8 +17,8 @@ export async function getEncontros(params?: {
   return response.data;
 }
 
-export async function updateEncontro(data: EncontroRequest) {
-  const response = await api.put(`/encontros/${data.id}`, data);
+export async function updateEncontro(id: string, data: EncontroRequest) {
+  const response = await api.put(`/encontros/${id}`, data);
   return response.data;
 }
 

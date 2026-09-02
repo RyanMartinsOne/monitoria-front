@@ -39,8 +39,8 @@ export function useUpdateEncontro() {
   const queryClient = useQueryClient();
 
   return useMutation({
-    mutationFn: (updatedEncontro: EncontroRequest) => {
-      return updateEncontro(updatedEncontro);
+    mutationFn: ({ id, data }: { id: string; data: EncontroRequest }) => {
+      return updateEncontro(id, data);
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["encontros"] });

@@ -129,7 +129,7 @@ export function DialogMeeting({
       if (isEditing && encontro) {
         await updateEncontroMutation.mutateAsync({
           id: encontro.id,
-          ...payload,
+          data: payload,
         });
         setMode("view");
         return;
