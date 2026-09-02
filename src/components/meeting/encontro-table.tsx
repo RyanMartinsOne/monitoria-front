@@ -92,6 +92,7 @@ function EncontroTable({
                 <TableCell className="text-right">
                   <DialogMeeting encontro={encontro} mode="view">
                     <Button
+                    className="cursor-pointer"
                       variant="outline"
                       size="icon"
                       aria-label={`Ver detalhes da monitoria de ${encontro.beneficiado}`}

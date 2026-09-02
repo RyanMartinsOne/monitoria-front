@@ -55,7 +55,7 @@ export default function Meeting() {
         <h1 className="text-2xl font-bold">Monitoria</h1>
 
         <DialogMeeting>
-          <Button className="w-auto">
+          <Button className="w-auto cursor-pointer">
             <Pencil className="size-4" />
             Agendar
           </Button>

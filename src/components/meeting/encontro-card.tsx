@@ -58,7 +58,7 @@ export default function EncontroCard({
           <Button
             variant="outline"
             size="icon"
-            className="shrink-0"
+            className="shrink-0 cursor-pointer"
             aria-label={`Ver detalhes da monitoria de ${encontro.beneficiado}`}
           >
             <EyeIcon className="size-4" />
