@@ -14,6 +14,7 @@ import Meeting from "./pages/meetings/Metting";
 import MainLayout from "./pages/layouts/MainLayout";
 import AuthLayout from "./pages/layouts/AuthLayout";
 import ProtectedRoute from "./components/protectedRoute";
+import MeetingsByUser from "./pages/dashboard/MeetingsByUser";
 
 const router = createBrowserRouter([
   {
@@ -29,6 +30,10 @@ const router = createBrowserRouter([
           {
             path: "/dashboard",
             element: <Dashboard />,
+          },
+          {
+            path: "/dashboard/usuario/:usuarioId",
+            element: <MeetingsByUser />,
           },
           {
             path: "/meetings",
