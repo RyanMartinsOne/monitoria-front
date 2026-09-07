@@ -37,6 +37,17 @@ export default function App() {
             </NavigationMenuItem>
             )}
 
+            {usuario?.tipo === "COORDENADOR" && (
+            <NavigationMenuItem>
+              <Link
+                to="/statistics"
+                className={`${navigationMenuTriggerStyle()} text-white bg-transparent hover:bg-white/10 hover:text-white focus:bg-white/10 focus:text-white`}
+              >
+                Estatísticas
+              </Link>
+            </NavigationMenuItem>
+            )}
+
             <NavigationMenuItem>
               <Link
                 to="/meetings"
