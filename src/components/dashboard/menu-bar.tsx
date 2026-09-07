@@ -130,9 +130,6 @@ export default function DashboardMenubar({
           </MenubarGroup>
         </MenubarContent>
       </MenubarMenu>
-      <MenubarMenu>
-        <MenubarTrigger>Estatísticas</MenubarTrigger>
-      </MenubarMenu>
     </Menubar>
   );
 }
