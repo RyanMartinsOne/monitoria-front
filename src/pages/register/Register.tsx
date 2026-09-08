@@ -71,9 +71,9 @@ export default function Register() {
 
   async function onSubmit(data: RegisterData) {
     const payload: RegisterRequest = {
-      nome: data.name,
+      nome: data.name.trim(),
       materia: data.materia,
-      senha: data.password,
+      senha: data.password.trim(),
     };
     try {
       await registerMutation.mutateAsync(payload);

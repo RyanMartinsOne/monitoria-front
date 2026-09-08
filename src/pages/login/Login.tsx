@@ -49,8 +49,8 @@ export default function Login() {
 
   async function onSubmit(data: LoginData) {
     const payload: LoginRequest = {
-      nome: data.name,
-      senha: data.password,
+      nome: data.name.trim(),
+      senha: data.password.trim(),
     };
     try {
       await loginMutation.mutateAsync(payload);
