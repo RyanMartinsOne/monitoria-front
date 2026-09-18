@@ -1,75 +1,213 @@
-# React + TypeScript + Vite
+# Sistema de Gestão de Monitorias — Frontend
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Frontend da aplicação **Sistema de Gestão de Monitorias**, desenvolvido para fornecer a interface web utilizada por monitores e coordenadores no agendamento e acompanhamento de encontros de monitoria.
 
-Currently, two official plugins are available:
+> 🎓 **Projeto acadêmico** desenvolvido no curso de Análise e Desenvolvimento de Sistemas da **UNINTER — Centro Universitário Internacional**.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+### 🔗 Repositórios
 
-## React Compiler
+* **Frontend:** este repositório
+* **Backend:** [Extensionista-Painel-Monitoria](https://github.com/RyanMartinsOne/Extensionista-Painel-Monitoria)
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+O frontend consome a **API REST desenvolvida em Java e Spring Boot**, sendo responsável pela interface de interação com o sistema.
 
-## Expanding the ESLint configuration
+## 📌 Sobre o Projeto
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+A aplicação fornece uma interface web para que monitores e coordenadores possam utilizar as funcionalidades disponibilizadas pelo backend.
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+Entre os principais recursos estão:
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+* Autenticação de usuários
+* Cadastro de usuários
+* Gerenciamento de encontros de monitoria
+* Agendamento de encontros
+* Consulta e edição de encontros
+* Cancelamento de encontros
+* Dashboard com estatísticas
+* Filtros para consulta de dados
+* Interface responsiva para diferentes tamanhos de tela
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+## 🔧 Funcionalidades
 
+### 🔐 Autenticação
+
+* Tela de login
+* Tela de cadastro
+* Autenticação integrada à API
+* Armazenamento do token de autenticação
+* Controle de acesso às rotas protegidas
+* Redirecionamento para login quando a sessão não está autenticada
+
+### 📅 Gerenciamento de monitorias
+
+* Listagem de encontros
+* Agendamento de novos encontros
+* Visualização dos detalhes
+* Edição de encontros
+* Exclusão de encontros
+* Atualização do status
+* Exibição das informações de monitoria de acordo com o usuário autenticado
+
+### 📊 Dashboard
+
+* Visualização de indicadores
+* Total de encontros
+* Encontros concluídos
+* Encontros agendados
+* Encontros cancelados
+* Taxa de conclusão
+* Filtros por período
+* Visualização de estatísticas em gráficos
+
+### 📱 Interface responsiva
+
+A interface foi desenvolvida para se adaptar a diferentes tamanhos de tela, reorganizando informações e ações de acordo com o espaço disponível.
+
+## 💻 Tecnologias
+
+### Frontend
+
+* React
+* TypeScript
+* Vite
+* Tailwind CSS
+* React Router
+* TanStack Query
+* Axios
+* React Hook Form
+* Zod
+
+### Ferramentas
+
+* Git
+* GitHub
+* npm
+
+## 🏗️ Arquitetura
+
+A aplicação foi organizada em componentes e módulos, buscando separar responsabilidades e facilitar a manutenção do código.
+
+Uma representação simplificada da estrutura é:
+
+```text
+Pages
+  ↓
+Components
+  ↓
+Hooks / Queries
+  ↓
+API
+  ↓
+Backend REST
 ```
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+### Principais responsabilidades
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+#### Pages
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
+Responsáveis pela composição das telas e organização das funcionalidades de cada rota da aplicação.
 
+#### Components
+
+Componentes reutilizáveis utilizados na construção da interface, formulários, tabelas, diálogos e outros elementos da aplicação.
+
+#### Hooks / Queries
+
+Responsáveis pelo gerenciamento das operações de comunicação com a API e pelo controle dos dados utilizados pela interface.
+
+#### API
+
+Responsável pela comunicação com o backend por meio de requisições HTTP utilizando Axios.
+
+## 🔄 Comunicação com o Backend
+
+O frontend utiliza **Axios** para realizar as requisições HTTP à API REST.
+
+A URL base da API pode ser configurada por meio da variável de ambiente:
+
+```env
+VITE_API_BASE_URL=http://localhost:8080
 ```
+
+As requisições autenticadas utilizam o token JWT armazenado após o login.
+
+O token é enviado no header:
+
+```http
+Authorization: Bearer <token>
+```
+
+Quando a API retorna uma resposta `401 Unauthorized`, a aplicação encerra a sessão local e redireciona o usuário para a tela de login.
+
+## 🧭 Rotas da aplicação
+
+| Rota          | Descrição                    | Acesso      |
+| ------------- | ---------------------------- | ----------- |
+| `/`           | Página inicial               | Público     |
+| `/login`      | Login                        | Público     |
+| `/register`   | Cadastro de usuário          | Público     |
+| `/statistics` | Estatísticas sobre encontros | Autenticado |
+| `/meetings`   | Gerenciamento de encontros   | Autenticado |
+| `/dashboard`  | Dashboard administrativo     | Coordenador |
+
+## ▶️ Como executar
+
+### Pré-requisitos
+
+Antes de executar o projeto, é necessário ter instalado:
+
+* Node.js
+* npm
+
+O backend da aplicação também deve estar em execução para que as funcionalidades que dependem da API funcionem corretamente.
+
+### 1. Clone o repositório
+
+```bash
+git clone https://github.com/RyanMartinsOne/monitoria-front.git
+```
+
+### 2. Acesse a pasta
+
+```bash
+cd monitoria-front
+```
+
+### 3. Instale as dependências
+
+```bash
+npm install
+```
+
+### 4. Configure a API
+
+Crie um arquivo `.env` na raiz do projeto:
+
+```env
+VITE_API_BASE_URL=http://localhost:8080
+```
+
+### 5. Execute o projeto
+
+```bash
+npm run dev
+```
+
+A aplicação estará disponível no endereço informado pelo Vite no terminal.
+
+## 📚 Objetivos de aprendizagem
+
+O desenvolvimento deste projeto permitiu aplicar conceitos como:
+
+* Desenvolvimento de interfaces com React
+* Tipagem estática com TypeScript
+* Criação de componentes reutilizáveis
+* Gerenciamento de formulários
+* Validação de dados
+* Gerenciamento de estado assíncrono
+* Consumo de APIs REST
+* Autenticação utilizando JWT
+* Proteção de rotas
+* Responsividade
+* Organização e modularização de componentes
+* Versionamento de código com Git
