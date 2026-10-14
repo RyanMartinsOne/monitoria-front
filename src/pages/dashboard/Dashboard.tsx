@@ -108,7 +108,7 @@ export default function Dashboard() {
               <p>Nada foi encontrado ao filtrar, tente ser mais abrangente.</p>
             ) : (
               <div className="grid col-auto gap-4 sm:grid-cols-2 lg:grid-cols-4">
-                {usuarios.map((usuario) => (
+                {usuarios.map((usuario) => usuario.tipo !== "COORDENADOR" &&(
                   <UsuarioCard key={usuario.id} usuario={usuario} />
                 ))}
               </div>
