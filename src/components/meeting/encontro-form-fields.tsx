@@ -34,6 +34,7 @@ interface MeetingFormFieldsProps {
   disabled: boolean;
   isCalendarOpen: boolean;
   onCalendarOpenChange: (open: boolean) => void;
+  imageSlot?: React.ReactNode;
 }
 
 function FormError({ message }: { message?: string }) {
@@ -58,7 +59,8 @@ export function MeetingFormFields({
   errors,
   disabled,
   isCalendarOpen,
-  onCalendarOpenChange,
+  imageSlot,
+  onCalendarOpenChange
 }: MeetingFormFieldsProps) {
   return (
     <FieldGroup className="no-scrollbar -mx-4 max-h-[70vh] overflow-y-auto px-4 py-4">
@@ -222,6 +224,8 @@ export function MeetingFormFields({
 
         <FormError message={errors.observations?.message} />
       </Field>
+
+      {imageSlot}
     </FieldGroup>
   );
 }

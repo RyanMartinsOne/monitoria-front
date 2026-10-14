@@ -33,6 +33,12 @@ import {
   getMeetingFormValues,
   toEncontroRequest,
 } from "../../utils/encontro-form-utils";
+import { MeetingImageView } from "./encontro-image-view";
+import { toast } from "../ui/toast";
+import { useUploadImage } from "@/hooks/useImage";
+import { MeetingImageEdit } from "./encontro-image-edit";
+import { MeetingImageField } from "./encontro-image-field";
+import { Field, FieldLabel } from "../ui/field";
 
 type DialogMeetingMode = "create" | "view" | "edit";
 
@@ -87,11 +93,19 @@ export function DialogMeeting({
   const [isDeleteConfirmationOpen, setIsDeleteConfirmationOpen] =
     useState(false);
 
+  const [imageFile, setImageFile] = useState<File | null>(null);
+  const [createdEncontroId, setCreatedEncontroId] = useState<number | null>(
+    null,
+  );
+  const uploadImageMutation = useUploadImage();
+
   const { data: usuario } = useCurrentUser();
 
   const createEncontroMutation = useCreateEncontro();
   const updateEncontroMutation = useUpdateEncontro();
   const deleteEncontroMutation = useDeleteEncontro();
+
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const isViewing = mode === "view";
   const isEditing = mode === "edit";
@@ -118,27 +132,89 @@ export function DialogMeeting({
 
     if (nextOpen) {
       setMode(initialMode);
+      setImageFile(null);
+      setCreatedEncontroId(null);
+      uploadImageMutation.reset();
       reset(getMeetingFormValues(encontro, defaultMateria));
     }
   }
 
   async function handleSave(values: MeetingFormValues) {
-    const payload = toEncontroRequest(values);
+    if (isSubmitting) return; // ignora cliques repetidos
+
+    setIsSubmitting(true);
 
     try {
+      const payload = toEncontroRequest(values);
+
       if (isEditing && encontro) {
         await updateEncontroMutation.mutateAsync({
           id: encontro.id,
           data: payload,
         });
+
+        if (imageFile) {
+          try {
+            await uploadImageMutation.mutateAsync({
+              encontroId: Number(encontro.id),
+              file: imageFile,
+            });
+            setImageFile(null);
+          } catch (uploadError) {
+            console.error("Erro ao enviar imagem:", uploadError);
+            toast.add({
+              title: "Dados salvos, mas a imagem não foi enviada",
+              description:
+                "Clique em Salvar para tentar enviar a imagem novamente.",
+              type: "warning",
+            });
+            return;
+          }
+        }
+
         setMode("view");
         return;
       }
 
-      await createEncontroMutation.mutateAsync(payload);
+      let encontroId = createdEncontroId;
+
+      if (encontroId === null) {
+        const encontroCriado =
+          await createEncontroMutation.mutateAsync(payload);
+        encontroId = Number(encontroCriado.id);
+        setCreatedEncontroId(encontroId);
+      }
+
+      if (imageFile) {
+        try {
+          await uploadImageMutation.mutateAsync({
+            encontroId,
+            file: imageFile,
+          });
+        } catch (uploadError) {
+          console.error("Erro ao enviar imagem:", uploadError);
+          toast.add({
+            title: "Monitoria criada, mas a imagem não foi enviada",
+            description:
+              "Clique em Salvar para tentar enviar a imagem novamente.",
+            type: "warning",
+          });
+          return;
+        }
+      }
+
+      toast.add({
+        title: "Monitoria criada",
+        description: imageFile
+          ? "A monitoria e a imagem foram salvas."
+          : "A monitoria foi salva.",
+        type: "success",
+      });
       setOpen(false);
     } catch (error) {
       console.error("Erro ao salvar monitoria:", error);
+    } finally {
+      setIsSubmitting(false);
     }
   }
 
@@ -154,12 +230,16 @@ export function DialogMeeting({
   }
 
   function handleCancelEdit() {
+    setImageFile(null);
     reset(getMeetingFormValues(encontro));
     setMode("view");
   }
 
   const isSaving =
-    createEncontroMutation.isPending || updateEncontroMutation.isPending;
+    isSubmitting ||
+    createEncontroMutation.isPending ||
+    updateEncontroMutation.isPending ||
+    uploadImageMutation.isPending;
   const hasSaveError =
     createEncontroMutation.isError || updateEncontroMutation.isError;
 
@@ -213,6 +293,34 @@ export function DialogMeeting({
             disabled={isViewing}
             isCalendarOpen={isCalendarOpen}
             onCalendarOpenChange={setIsCalendarOpen}
+            imageSlot={
+              <>
+                {initialMode === "create" && (
+                  <MeetingImageField
+                    file={imageFile}
+                    onFileChange={setImageFile}
+                  />
+                )}
+
+                {isViewing && encontro && (
+                  <Field>
+                    <FieldLabel>Imagem</FieldLabel>
+                    <MeetingImageView encontroId={Number(encontro.id)} />
+                  </Field>
+                )}
+
+                {isEditing && encontro && (
+                  <Field>
+                    <FieldLabel>Imagem</FieldLabel>
+                    <MeetingImageEdit
+                      encontroId={Number(encontro.id)}
+                      file={imageFile}
+                      onFileChange={setImageFile}
+                    />
+                  </Field>
+                )}
+              </>
+            }
           />
 
           <MutationErrorMessage
