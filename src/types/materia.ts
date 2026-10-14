@@ -14,6 +14,7 @@ const MATERIA_VALUES = [
   "FILOSOFIA",
   "SOCIOLOGIA",
   "ARTES",
+  "OUTROS"
 ] as const;
 
 // Dicionário para ligar o value a label
@@ -30,6 +31,7 @@ const MATERIA_LABELS = {
   FILOSOFIA: "Filosofia",
   SOCIOLOGIA: "Sociologia",
   ARTES: "Artes",
+  OUTROS: "Outros"
 };
 
 // Para o Select
